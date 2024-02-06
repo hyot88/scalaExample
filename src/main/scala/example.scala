@@ -14,7 +14,8 @@ object example {
     /*
       1. coalesce
         - RDD(Resilient Distributed Dataset)의 파티션 수를 재조정
-        - RDD는 여러 개의 파티션으로 이루어져 있고, 하나의 파티션은 동일한 타입의 여러 개의 객체들로 이루어져 있는 분산 데이터 집합
+        - RDD는 Apache Spark 에서 사용되는 기본적인 데이터 구조이며 불변성을 가집니다.
+        - RDD는 클러스터의 노드에 분할된 데이터의 컬렉션으로, 병렬로 작업을 수행할 수 있습니다.
         - coalesce 는 줄이는 용도로 주로 사용, 강제로 셔플을 수행하라는 옵션을 지정하지 않는 한 셔플을 사용하지 않음, 비용이 적게 듬
      */
     val rdd_1 = sc.parallelize(1 to 100, 5)
@@ -87,5 +88,43 @@ object example {
         1810
         1410
      */
+
+    /*
+      8. reduce
+        - 컬렉션의 모든 요소를 단일 값으로 축소
+     */
+    case class Grade(student: String, subject: String, score: Int)
+
+    val grades_8 = List(
+      Grade("Alice", "Math", 85),
+      Grade("Bob", "Math", 90),
+      Grade("Charlie", "Math", 95),
+      Grade("Alice", "English", 88),
+      Grade("Bob", "English", 92),
+      Grade("Charlie", "English", 96)
+    )
+
+    val highestGrade = grades_8.reduce((g1, g2) => if (g1.score > g2.score) g1 else g2)
+
+    println(s"8 >> The highest grade is ${highestGrade.score}, achieved by ${highestGrade.student} in ${highestGrade.subject}.")
+    // 출력: The highest grade is 96, achieved by Charlie in English.
+
+    /*
+      9. groupBy
+        - 컬렉션의 요소를 특정 키에 따라 그룹화
+     */
+    val groupedGrades_9 = grades_8.groupBy(_.subject)
+
+    println("9 >> ")
+    groupedGrades_9.foreach { case (subject, grades) =>
+      println(s"$subject: ${grades.map(_.score).mkString(", ")}")
+    }
+
+    /*
+      출력:
+      English: 88, 92, 96
+      Math: 85, 90, 95
+     */
+
   }
 }
