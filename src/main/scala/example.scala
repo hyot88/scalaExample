@@ -4,6 +4,7 @@ object example {
   def main(args: Array[String]): Unit = {
     // SparkConf를 생성하여 애플리케이션 설정을 정의합니다.
     val conf = new SparkConf()
+      .set("spark.driver.host", "127.0.0.1")
       .setAppName("example")
       .setMaster("local[*]") // 로컬 모드에서 실행합니다.
 
@@ -109,6 +110,9 @@ object example {
     println(s"8 >> The highest grade is ${highestGrade.score}, achieved by ${highestGrade.student} in ${highestGrade.subject}.")
     // 출력: The highest grade is 96, achieved by Charlie in English.
 
+    val list_10 = 1 to 10
+    println(list_10.reduceRight(_ - _))
+
     /*
       9. groupBy
         - 컬렉션의 요소를 특정 키에 따라 그룹화
@@ -125,6 +129,23 @@ object example {
       English: 88, 92, 96
       Math: 85, 90, 95
      */
+
+    /*
+      10. yeild 를 이용한 시퀀스 컴프리헨션
+     */
+    def checkSum(num: Int, sum: Int) =
+      for (
+        start <- 0 until num; // 0 ~ 19
+        inner <- start until num if start + inner == sum  // start ~ 19
+      ) yield (start, inner);
+
+    println("10 >> ")
+    checkSum(20, 32) foreach {
+      case (i, j) =>
+        println(s"($i, $j)")
+    }
+
+
 
   }
 }
