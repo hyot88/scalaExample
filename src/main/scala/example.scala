@@ -145,6 +145,11 @@ object example {
         println(s"($i, $j)")
     }
 
+    /*
+      11. groupbykey, reducebykey
+      https://seamless.tistory.com/101
+     */
+
 
 
   }
